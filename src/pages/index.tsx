@@ -1,16 +1,16 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   createSmartAccountClient,
   BiconomySmartAccountV2,
+  PaymasterMode,
 } from "@biconomy/account";
 import { ethers } from "ethers";
-import { Web3Auth } from "@web3auth/modal";
-import { CHAIN_NAMESPACES } from "@web3auth/base";
+import { Magic } from "magic-sdk";
+import { contractABI } from "../contract/contractABI";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-export default function Biconomy() {
+export default function Home() {
   const [smartAccount, setSmartAccount] =
     useState<BiconomySmartAccountV2 | null>(null);
   const [smartAccountAddress, setSmartAccountAddress] = useState<string | null>(
@@ -39,55 +39,29 @@ export default function Biconomy() {
     },
   ];
 
+  let magic: any;
+
+  useEffect(() => {
+    // Initialize the Magic instance
+    //You can get your own API key by signing up for Magic here: https://dashboard.magic.link/signup
+    //Don't have an API KEY yet? Use this - "pk_live_B3CC63B614156D0E"
+    magic = new Magic("pk_live_B3CC63B614156D0E", {
+      network: {
+        rpcUrl: chains[chainSelected].providerUrl,
+        chainId: chains[chainSelected].chainId, // Polygon Amoy or change as per your preferred chain
+      },
+    });
+
+    console.log("Magic initialized", magic);
+  }, [chainSelected]);
+
   const connect = async () => {
     try {
-      const chainConfig =
-        chainSelected == 0
-          ? {
-              chainNamespace: CHAIN_NAMESPACES.EIP155,
-              chainId: "0xaa36a7",
-              rpcTarget: chains[chainSelected].providerUrl,
-              displayName: "Ethereum Sepolia",
-              blockExplorer: "https://sepolia.etherscan.io/",
-              ticker: "ETH",
-              tickerName: "Ethereum",
-            }
-          : {
-              chainNamespace: CHAIN_NAMESPACES.EIP155,
-              chainId: "0x13882",
-              rpcTarget: chains[chainSelected].providerUrl,
-              displayName: "Base Sepolia",
-              blockExplorer: "https://sepolia-explorer.base.org/",
-              ticker: "ETH",
-              tickerName: "Ethereum",
-            };
-
-      //Creating web3auth instance
-      const web3Options: any = {
-        clientId:
-          "BKMdikoEm3Yio_rnsuqMYCi6L6RiEshtvfs3nc79yfX-KOLrSGtymFh9VWUR5wOL3ZckJG--BqiuYaMDsQOSv18", // Get your Client ID from the Web3Auth Dashboard https://dashboard.web3auth.io/
-        web3AuthNetwork: "sapphire_devnet", // Web3Auth Network
-        chainConfig,
-        // You can visit web3auth.io/docs for more configuration options
-        uiConfig: {
-          appName: "Biconomy X Web3Auth",
-          mode: "dark", // light, dark or auto
-          loginMethodsOrder: ["apple", "google", "twitter"],
-          logoLight: "https://web3auth.io/images/web3auth-logo.svg",
-          logoDark: "https://web3auth.io/images/web3auth-logo---Dark.svg",
-          defaultLanguage: "en", // en, de, ja, ko, zh, es, fr, pt, nl
-          loginGridCol: 3,
-          primaryButton: "socialLogin", // "externalLogin" | "socialLogin" | "emailLogin"
-        },
-      };
-      const web3auth: any = new Web3Auth(web3Options);
-
-      await web3auth.initModal();
-      const web3authProvider = await web3auth.connect();
-      const ethersProvider = new ethers.providers.Web3Provider(
-        web3authProvider as any
+      await magic.wallet.connectWithUI();
+      const web3Provider = new ethers.providers.Web3Provider(
+        magic.rpcProvider,
+        "any"
       );
-      const web3AuthSigner = ethersProvider.getSigner();
 
       const config = {
         biconomyPaymasterApiKey: chains[chainSelected].biconomyPaymasterApiKey,
@@ -95,7 +69,7 @@ export default function Biconomy() {
       };
 
       const smartWallet = await createSmartAccountClient({
-        signer: web3AuthSigner,
+        signer: web3Provider.getSigner(),
         biconomyPaymasterApiKey: config.biconomyPaymasterApiKey,
         bundlerUrl: config.bundlerUrl,
         rpcUrl: chains[chainSelected].providerUrl,
@@ -112,8 +86,74 @@ export default function Biconomy() {
     }
   };
 
+  const getCountId = async () => {
+    const contractAddress = chains[chainSelected].incrementCountContractAdd;
+    const provider = new ethers.providers.JsonRpcProvider(
+      chains[chainSelected].providerUrl
+    );
+    const contractInstance = new ethers.Contract(
+      contractAddress,
+      contractABI,
+      provider
+    );
+    const countId = await contractInstance.getCount();
+    setCount(countId.toString());
+  };
+
+  const incrementCount = async () => {
+    try {
+      const toastId = toast("Populating Transaction", { autoClose: false });
+
+      const contractAddress = chains[chainSelected].incrementCountContractAdd;
+      const provider = new ethers.providers.JsonRpcProvider(
+        chains[chainSelected].providerUrl
+      );
+      const contractInstance = new ethers.Contract(
+        contractAddress,
+        contractABI,
+        provider
+      );
+      const minTx = await contractInstance.populateTransaction.increment();
+      console.log("Mint Tx Data", minTx.data);
+      const tx1 = {
+        to: contractAddress,
+        data: minTx.data,
+      };
+
+      toast.update(toastId, {
+        render: "Sending Transaction",
+        autoClose: false,
+      });
+
+      //@ts-ignore
+      const userOpResponse = await smartAccount?.sendTransaction(tx1, {
+        paymasterServiceData: { mode: PaymasterMode.SPONSORED },
+      });
+      //@ts-ignore
+      const { transactionHash } = await userOpResponse.waitForTxHash();
+      console.log("Transaction Hash", transactionHash);
+
+      if (transactionHash) {
+        toast.update(toastId, {
+          render: "Transaction Successful",
+          type: "success",
+          autoClose: 5000,
+        });
+        setTxnHash(transactionHash);
+        await getCountId();
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error("Transaction Unsuccessful", { autoClose: 5000 });
+    }
+  };
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-start gap-8 p-24">
+      <div className="text-[4rem] font-bold text-orange-400">
+        Biconomy-Magic
+      </div>
+
       {!smartAccount && (
         <>
           <div className="flex flex-row justify-center items-center gap-4">
@@ -135,14 +175,14 @@ export default function Biconomy() {
                 setChainSelected(1);
               }}
             >
-              Base Sepolia
+              Poly Amoy
             </div>
           </div>
           <button
             className="w-[10rem] h-[3rem] bg-orange-300 text-black font-bold rounded-lg"
             onClick={connect}
           >
-            Web3Auth Sign in
+            Magic Sign in
           </button>
         </>
       )}
@@ -155,11 +195,21 @@ export default function Biconomy() {
           <span>Network: {chains[chainSelected].name}</span>
           <div className="flex flex-row justify-between items-start gap-8">
             <div className="flex flex-col justify-center items-center gap-4">
-           
+              <button
+                className="w-[10rem] h-[3rem] bg-orange-300 text-black font-bold rounded-lg"
+                onClick={getCountId}
+              >
+                Get Count Id
+              </button>
               <span>{count}</span>
             </div>
             <div className="flex flex-col justify-center items-center gap-4">
-            
+              <button
+                className="w-[10rem] h-[3rem] bg-orange-300 text-black font-bold rounded-lg"
+                onClick={incrementCount}
+              >
+                Increment Count
+              </button>
               {txnHash && (
                 <a
                   target="_blank"
