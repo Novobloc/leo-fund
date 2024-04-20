@@ -3,26 +3,56 @@ import Link from "next/link";
 import ProjectCard from "@/components/_projects/project-card";
 import { Button, useDisclosure } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
+import { useWallet } from "@/context/WalletContext";
 
 const Project = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [projects, setProjects]: any = useState([]);
   const [selectedProject, setSelectedProject] = useState(projects?.[0]);
+  const {
+    isAuthenticated,
+    smartAccountAddress,
+    getProjectFundInUSD,
+    getAllProjects,
+    createProject,
+    fundEth,
+    withdrawEth
+  } = useWallet();
 
   useEffect(() => {
-    handleGetProjects();
-  }, []);
+    isAuthenticated && handleGetProjects();
+  }, [isAuthenticated]);
 
   const handleGetProjects = async () => {
-    // const data = await getProjectCreated(selectedChain.chain.id);
-    const data: any = [];
-    // console.log(data, 'projects', selectedChain.chain.name);
+    const data: any = await getAllProjects();
+    console.log(data, "data");
+
     setProjects(data);
   };
 
   const handleSelectProject = (item: any) => {
     setSelectedProject(item);
     onOpen();
+  };
+
+  const handleGetProjectFundInUSD = async (item: any) => {
+    const data2: any = await getProjectFundInUSD(0);
+    console.log(data2, "data2");
+  };
+
+  const handleCreateProject = async (item: any) => {
+    const data3: any = await createProject("Project 2");
+    console.log(data3, "data3");
+  };
+
+  const handleFundEth = async (item: any) => {
+    const data3: any = await fundEth(0, 10000000000000000);
+    console.log(data3, "data3");
+  };
+
+  const handleWithdrawEth = async (item: any) => {
+    const data3: any = await withdrawEth(0);
+    console.log(data3, "data3");
   };
 
   return (
@@ -33,6 +63,10 @@ const Project = () => {
             Discover projects
           </h3>
           <Button onClick={handleGetProjects}> Refresh</Button>
+          <Button onClick={handleCreateProject}> Create</Button>
+          <Button onClick={handleGetProjectFundInUSD}> Get Funds</Button>
+          <Button onClick={handleFundEth}> Fund</Button>
+          <Button onClick={handleWithdrawEth}> Withdraw</Button>
 
           <Link
             href={"/list-project"}

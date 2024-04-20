@@ -2,12 +2,15 @@
 import {
   createSmartAccountClient,
   BiconomySmartAccountV2,
+  PaymasterMode,
 } from "@biconomy/account";
 import { ethers } from "ethers";
 import { Magic } from "magic-sdk";
 import "react-toastify/dist/ReactToastify.css";
 import { createContext, useContext, useEffect, useState } from "react";
 import _ from "lodash";
+import { config } from "@/constants/config";
+import { toast } from "react-toastify";
 
 type Chain = {
   chainId: number;
@@ -26,6 +29,11 @@ interface WalletContextType {
   chainSelected: number;
   setChainSelected: React.Dispatch<React.SetStateAction<number>>;
   smartAccount: BiconomySmartAccountV2 | null;
+  getAllProjects: () => Promise<any>;
+  getProjectFundInUSD: (projectNumber: number) => Promise<any>;
+  createProject: (name: string) => Promise<any>;
+  fundEth: (projectNo: number, amount: number) => Promise<any>;
+  withdrawEth: (projectNo: number) => Promise<any>;
 }
 
 interface WalletProviderProps {
@@ -113,9 +121,218 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
       const saAddress = await smartWallet.getAccountAddress();
       console.log("Smart Account Address", saAddress);
       setSmartAccountAddress(saAddress);
-      setIsAuthenticated(true)
+      setIsAuthenticated(true);
     } catch (error) {
       console.error(error);
+    }
+  };
+
+  const getAllProjects = async () => {
+    try {
+      const contractAddress = config.MAIN_CONTRACT(
+        chains[chainSelected].chainId
+      ).ADDRESS;
+
+      const contractInstance = new ethers.Contract(
+        contractAddress,
+        config.MAIN_CONTRACT(chains[chainSelected].chainId).ABI, // Assuming you have defined contractABI for FundAProject contract
+        provider
+      );
+      const response = await contractInstance.getAllProjects();
+
+      const projects = response.map((project: any) => {
+        const item = {
+          projectName: project[0],
+          balance: project[1].toNumber(),
+          owner: project[2],
+        };
+        return item;
+      });
+
+      return projects;
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  async function getProjectFundInUSD(projectNo: any) {
+    try {
+      const contractAddress = config.MAIN_CONTRACT(
+        chains[chainSelected].chainId
+      ).ADDRESS;
+
+      const contractInstance = new ethers.Contract(
+        contractAddress,
+        config.MAIN_CONTRACT(chains[chainSelected].chainId).ABI, // Assuming you have defined contractABI for FundAProject contract
+        provider
+      );
+
+      const ethPriceDataFeed = await contractInstance.getProjectFundInUSD(
+        projectNo
+      );
+
+      console.log(ethPriceDataFeed.toNumber(), "ethPriceDataFeed");
+
+      return ethPriceDataFeed.toNumber();
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  const createProject = async (name: string) => {
+    try {
+      const toastId = toast("Creating Project", { autoClose: false });
+
+      const contractAddress = config.MAIN_CONTRACT(
+        chains[chainSelected].chainId
+      ).ADDRESS;
+
+      const contractInstance = new ethers.Contract(
+        contractAddress,
+        config.MAIN_CONTRACT(chains[chainSelected].chainId).ABI, // Assuming you have defined contractABI for FundAProject contract
+        provider
+      );
+
+      const minTx = await contractInstance.populateTransaction.createProject(
+        name
+      );
+      console.log("Create Project Tx Data", minTx.data);
+      const tx1: any = {
+        to: contractAddress,
+        data: minTx.data,
+      };
+
+      toast.update(toastId, {
+        render: "Sending Transaction",
+        autoClose: false,
+      });
+
+      const userOpResponse: any = await smartAccount?.sendTransaction(tx1, {
+        paymasterServiceData: { mode: PaymasterMode.SPONSORED },
+      });
+      const { transactionHash } = await userOpResponse.waitForTxHash();
+      console.log("Transaction Hash", transactionHash);
+
+      if (transactionHash) {
+        toast.update(toastId, {
+          render: "Transaction Successful",
+          type: "success",
+          autoClose: 5000,
+        });
+        return transactionHash;
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Transaction Unsuccessful", { autoClose: 5000 });
+    }
+  };
+
+  const fundEth = async (projectNo: number, amount: number) => {
+    try {
+      const toastId = toast("Funding ETH to Project", { autoClose: false });
+      const contractAddress = config.MAIN_CONTRACT(
+        chains[chainSelected].chainId
+      ).ADDRESS;
+
+      const contractInstance = new ethers.Contract(
+        contractAddress,
+        config.MAIN_CONTRACT(chains[chainSelected].chainId).ABI, // Assuming you have defined contractABI for FundAProject contract
+        provider
+      );
+
+      // Convert amount to Wei
+      const amountInWei = ethers.utils.parseEther(amount.toString());
+
+      // Prepare transaction data
+      const minTx = await contractInstance.populateTransaction.fundEth(
+        projectNo,
+        {
+          value: amountInWei,
+        }
+      );
+      console.log("Fund ETH Tx Data", minTx.data);
+
+      // Create transaction object
+      const tx1: any = {
+        to: contractAddress,
+        data: minTx.data,
+        value: amountInWei, // Include ETH value in the transaction
+      };
+
+      // Update toast and send transaction
+      toast.update(toastId, {
+        render: "Sending Transaction",
+        autoClose: false,
+      });
+      const userOpResponse: any = await smartAccount?.sendTransaction(tx1, {
+        paymasterServiceData: { mode: PaymasterMode.SPONSORED },
+      });
+      const { transactionHash } = await userOpResponse.waitForTxHash();
+      console.log("Transaction Hash", transactionHash);
+
+      // Handle success
+      if (transactionHash) {
+        toast.update(toastId, {
+          render: "Transaction Successful",
+          type: "success",
+          autoClose: 5000,
+        });
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Transaction Unsuccessful", { autoClose: 5000 });
+    }
+  };
+
+  const withdrawEth = async (projectNo: number) => {
+    try {
+      const toastId = toast("Funding ETH to Project", { autoClose: false });
+      const contractAddress = config.MAIN_CONTRACT(
+        chains[chainSelected].chainId
+      ).ADDRESS;
+
+      const contractInstance = new ethers.Contract(
+        contractAddress,
+        config.MAIN_CONTRACT(chains[chainSelected].chainId).ABI, // Assuming you have defined contractABI for FundAProject contract
+        provider
+      );
+
+      // Convert amount to Wei
+
+      // Prepare transaction data
+      const minTx = await contractInstance.populateTransaction.fundEth(
+        projectNo,
+      );
+      console.log("Fund ETH Tx Data", minTx.data);
+
+      // Create transaction object
+      const tx1: any = {
+        to: contractAddress,
+        data: minTx.data,
+      };
+
+      // Update toast and send transaction
+      toast.update(toastId, {
+        render: "Sending Transaction",
+        autoClose: false,
+      });
+      const userOpResponse: any = await smartAccount?.sendTransaction(tx1, {
+        paymasterServiceData: { mode: PaymasterMode.SPONSORED },
+      });
+      const { transactionHash } = await userOpResponse.waitForTxHash();
+      console.log("Transaction Hash", transactionHash);
+
+      // Handle success
+      if (transactionHash) {
+        toast.update(toastId, {
+          render: "Transaction Successful",
+          type: "success",
+          autoClose: 5000,
+        });
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Transaction Unsuccessful", { autoClose: 5000 });
     }
   };
 
@@ -133,6 +350,11 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
         chainSelected,
         setChainSelected,
         smartAccount,
+        getAllProjects,
+        getProjectFundInUSD,
+        createProject,
+        fundEth,
+        withdrawEth,
       }}
     >
       {children}

@@ -3,13 +3,7 @@ import Link from "next/link";
 import React from "react";
 
 export default function Header(): JSX.Element {
-  const {
-    isAuthenticated,
-    smartAccountAddress,
-    connectWallet,
-    chainSelected,
-    setChainSelected,
-  } = useWallet();
+  const { isAuthenticated, smartAccountAddress, connectWallet } = useWallet();
 
   return (
     <section className="w-full h-[10vh] px-8 text-gray-700 bg-white">
@@ -47,15 +41,15 @@ export default function Header(): JSX.Element {
           </nav>
         </div>
 
-        
-          <button
-            disabled={isAuthenticated ? true : false}
-            onClick={connectWallet}
-            className="inline-flex items-center px-2.5 py-1.5 border border-gray-300 shadow-sm text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-          >
-            {isAuthenticated ? `Connected to: ${smartAccountAddress}` : "Connect Wallet"}
-          </button>
-  
+        <button
+          disabled={isAuthenticated ? true : false}
+          onClick={connectWallet}
+          className="inline-flex items-center px-2.5 py-1.5 border border-gray-300 shadow-sm text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        >
+          {isAuthenticated
+            ? `Connected to: ${smartAccountAddress}`
+            : "Connect Wallet"}
+        </button>
       </div>
     </section>
   );
