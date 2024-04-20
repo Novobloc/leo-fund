@@ -1,21 +1,15 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.20;
 
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+// 0x2975f44770F683632DA105a5f75D50b95249C6ec
+
 import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 
 contract FundAProject {
     address payable public owner;
-    IERC20 public usdcToken;
     AggregatorV3Interface public ethPriceDataFeed;
 
-    event ProjectCreated(
-        string name,
-        uint256 usdcBalance,
-        uint256 ethBalance,
-        address owner,
-        string gitUrl
-    );
+    event ProjectCreated(string name, uint256 ethBalance, address owner);
 
     event EthFunded(uint256 amount, uint256 projectNo);
     event EthWithdrawn(uint256 amount, uint256 projectNo);
@@ -24,28 +18,19 @@ contract FundAProject {
         string name;
         uint256 ethBalance;
         address owner;
-        string gitUrl;
-        // write remaining properties
     }
 
     Project[] public projects;
 
-    constructor(
-       
-        address _ethPriceDataFeed,
-       
-    ) {
+    constructor(address _ethPriceDataFeed) {
         owner = payable(msg.sender);
 
         ethPriceDataFeed = AggregatorV3Interface(_ethPriceDataFeed);
     }
 
-    function createProject(
-        string calldata _name,
-        string calldata _gitUrl
-    ) public returns (bool) {
-        projects.push(Project(_name, 0, 0, msg.sender, _gitUrl));
-        emit ProjectCreated(_name, 0, 0, msg.sender, _gitUrl);
+    function createProject(string calldata _name) public returns (bool) {
+        projects.push(Project(_name, 0, msg.sender));
+        emit ProjectCreated(_name, 0, msg.sender);
         return true;
     }
 
@@ -66,12 +51,14 @@ contract FundAProject {
         emit EthWithdrawn(projects[projectNo].ethBalance, projectNo);
     }
 
-    function getProjectFundInUSD(
-        uint256 projectNo
-    ) public view returns (uint256, uint256) {
+    function getProjectFundInUSD(uint256 projectNo)
+        public
+        view
+        returns (uint256)
+    {
         (, int256 ethPrice, , , ) = ethPriceDataFeed.latestRoundData();
 
-        return (uint256(ethPrice) * projects[projectNo].ethBalance, );
+        return (uint256(ethPrice) * projects[projectNo].ethBalance);
     }
 
     function getBalance() public view returns (uint256) {
