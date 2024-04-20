@@ -1,24 +1,24 @@
-'use client';
-import { useEffect, useState } from 'react';
-import { ArrowDownIcon, ArrowRightIcon } from '@heroicons/react/24/solid';
-import { openTransak } from '@/components/_onramp/transak';
-import { ArrowTopRightOnSquareIcon, ArrowUpIcon } from '@heroicons/react/20/solid';
-import WithdrawModal from '@/components/_projects/withdraw-modal';
-import { Button, useDisclosure } from '@chakra-ui/react';
+"use client";
+import { useEffect, useState } from "react";
+import { ArrowDownIcon, ArrowRightIcon } from "@heroicons/react/24/solid";
+import { openTransak } from "@/components/_onramp/transak";
+import {
+  ArrowTopRightOnSquareIcon,
+  ArrowUpIcon,
+} from "@heroicons/react/20/solid";
+import WithdrawModal from "@/components/_projects/withdraw-modal";
+import { Button, useDisclosure } from "@chakra-ui/react";
 
 const Home = () => {
-
   const [projects, setProjects]: any = useState([]);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [selectedProject, setSelectedProject] = useState(projects?.[0]);
 
-  const handleGetBalances = async () => {
- 
-  };
+  const handleGetBalances = async () => {};
 
   const handleGetProjects = async () => {
     if (true) {
-    //   const data = await getProjectCreated(selectedChain.chain.id);
+      //   const data = await getProjectCreated(selectedChain.chain.id);
 
       setProjects([]);
     }
@@ -50,25 +50,34 @@ const Home = () => {
                           <div className="p-6 h-full">
                             <div className="h-full">
                               <div className="pt-2 h-full">
-                                <h2 className="leading-6 text-xl font-bold font-sans text-gray-900 ">Trade Crypto with Fiat</h2>
+                                <h2 className="leading-6 text-xl font-bold font-sans text-gray-900 ">
+                                  Trade Crypto with Fiat
+                                </h2>
                                 <p className="mt-4 text-base text-gray-500 font-extralight">
-                                  Buy & Sell crypto easily with fiat and add to your wallet
+                                  Buy & Sell crypto easily with fiat and add to
+                                  your wallet
                                 </p>
                                 <div className="pt-8 flex rounded-md shadow-sm  justify-center">
                                   <button
                                     type="button"
-                                    onClick={() => openTransak('BUY', "")}
+                                    onClick={() => openTransak("BUY", "")}
                                     className="mr-7 inline-flex items-center rounded-md border border-transparent bg-gradient-to-r from-black  to-blue-900 px-3 py-2 text-sm font-medium leading-4 text-white shadow-sm "
                                   >
-                                    <ArrowDownIcon className="-ml-0.5 mr-2 h-4 w-4" aria-hidden="true" />
+                                    <ArrowDownIcon
+                                      className="-ml-0.5 mr-2 h-4 w-4"
+                                      aria-hidden="true"
+                                    />
                                     Buy Crypto
                                   </button>
                                   <button
                                     type="button"
-                                    onClick={() => openTransak('SELL', "")}
+                                    onClick={() => openTransak("SELL", "")}
                                     className="inline-flex items-center rounded-md border border-transparent bg-gradient-to-r from-green-800  via-black to-black  px-3 py-2 text-sm font-medium leading-4 text-white shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
                                   >
-                                    <ArrowUpIcon className="-ml-0.5 mr-2 h-4 w-4" aria-hidden="true" />
+                                    <ArrowUpIcon
+                                      className="-ml-0.5 mr-2 h-4 w-4"
+                                      aria-hidden="true"
+                                    />
                                     Sell Crypto
                                   </button>
                                 </div>
@@ -86,12 +95,20 @@ const Home = () => {
                             <div className="p-6">
                               <div>
                                 <div>
-                                  <h2 className="leading-6 text-xl font-semibold text-gray-900 font-sans  lg:-mx-2">Balance</h2>
+                                  <h2 className="leading-6 text-xl font-semibold text-gray-900 font-sans  lg:-mx-2">
+                                    Balance
+                                  </h2>
                                   <div className=" px-4 text-right sm:px-6 -my-4">
-                                    <button type="submit" className="uppercase inline-flex text-blue-600 hover:text-orange-900">
-                                      {' '}
+                                    <button
+                                      type="submit"
+                                      className="uppercase inline-flex text-blue-600 hover:text-orange-900"
+                                    >
+                                      {" "}
                                       View All
-                                      <ArrowRightIcon className="h-5 w-5 ml-2" aria-hidden="true" />
+                                      <ArrowRightIcon
+                                        className="h-5 w-5 ml-2"
+                                        aria-hidden="true"
+                                      />
                                     </button>
                                   </div>
                                 </div>
@@ -109,10 +126,16 @@ const Home = () => {
                                               >
                                                 Symbol
                                               </th>
-                                              <th scope="col" className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900">
+                                              <th
+                                                scope="col"
+                                                className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900"
+                                              >
                                                 Balance
                                               </th>
-                                              <th scope="col" className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900">
+                                              <th
+                                                scope="col"
+                                                className="whitespace-nowrap px-2 py-3.5 text-left text-sm font-semibold text-gray-900"
+                                              >
                                                 View
                                               </th>
                                             </tr>
@@ -168,17 +191,23 @@ const Home = () => {
                         <div className="p-6">
                           <div>
                             <div>
-                              <h2 className="leading-6 text-xl font-semibold text-gray-900 font-sans  ">NFT Balance</h2>
+                              <h2 className="leading-6 text-xl font-semibold text-gray-900 font-sans  ">
+                                NFT Balance
+                              </h2>
                               <div className=" px-4 text-right sm:px-6 -my-4">
-                                <button type="submit" className="uppercase inline-flex text-blue-600 hover:text-orange-900">
-                                  {' '}
+                                <button
+                                  type="submit"
+                                  className="uppercase inline-flex text-blue-600 hover:text-orange-900"
+                                >
+                                  {" "}
                                   View All
-                                  <ArrowRightIcon className="h-5 w-5 ml-2" aria-hidden="true" />
+                                  <ArrowRightIcon
+                                    className="h-5 w-5 ml-2"
+                                    aria-hidden="true"
+                                  />
                                 </button>
                               </div>
                             </div>
-
-                          
                           </div>
                         </div>
                       </div>
@@ -191,26 +220,45 @@ const Home = () => {
         </section>
 
         <div className="max-w-7xl mx-auto border p-4 rounded-lg w-full mt-4">
-          <h2 className="leading-6 text-xl font-bold font-sans text-gray-900 py-10 ">Your Projects</h2>
+          <h2 className="leading-6 text-xl font-bold font-sans text-gray-900 py-10 ">
+            Your Projects
+          </h2>
           <ul role="list" className="divide-y divide-gray-100">
             {projects &&
               projects.map((project: any) => (
-                <li key={project.name} className="flex items-center justify-between gap-x-6 py-5">
+                <li
+                  key={project.name}
+                  className="flex items-center justify-between gap-x-6 py-5"
+                >
                   <div className="min-w-0">
                     <div className="flex items-start gap-x-3">
-                      <p className="text-sm font-semibold leading-6 text-gray-900">{project.name}</p>
+                      <p className="text-sm font-semibold leading-6 text-gray-900">
+                        {project.name}
+                      </p>
                     </div>
                   </div>
                   <div className="flex flex-none items-center gap-x-4">
-                    <Button backgroundColor={'black'} color={'white'} onClick={() => handleSelectProject(project)}>
+                    <Button
+                      backgroundColor={"black"}
+                      color={"white"}
+                      onClick={() => handleSelectProject(project)}
+                    >
                       Withdraw
                     </Button>
                   </div>
                 </li>
               ))}
           </ul>
-          {(!projects || projects?.length === 0) && <span className="py-4 mx-auto">No data</span>}
-          {isOpen && <WithdrawModal item={selectedProject} onClose={onClose} isOpen={isOpen} />}
+          {(!projects || projects?.length === 0) && (
+            <span className="py-4 mx-auto">No data</span>
+          )}
+          {isOpen && (
+            <WithdrawModal
+              item={selectedProject}
+              onClose={onClose}
+              isOpen={isOpen}
+            />
+          )}
         </div>
       </div>
     </>

@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from "react";
 import {
   Button,
   Modal,
@@ -13,11 +14,9 @@ import {
   InputGroup,
   InputLeftElement,
   Badge,
-} from '@chakra-ui/react';
-import React, { useEffect, useState } from 'react';
+} from "@chakra-ui/react";
 
-
-import { ButtonGroups } from './button-groups';
+import { ButtonGroups } from "./button-groups";
 
 const DonateModal = ({ item, isOpen, onClose, index }: any) => {
   const initialRef = React.useRef(null);
@@ -39,10 +38,10 @@ const DonateModal = ({ item, isOpen, onClose, index }: any) => {
   };
 
   const handleConfirm = async () => {
-    if (selectedCrypto === 'USDC') {
+    if (selectedCrypto === "USDC") {
       await handleFundUSDC();
     }
-    if (selectedCrypto === 'ETH') {
+    if (selectedCrypto === "ETH") {
       await handleFundEth();
     }
   };
@@ -64,36 +63,54 @@ const DonateModal = ({ item, isOpen, onClose, index }: any) => {
 
   useEffect(() => {
     // console.log(loading, txnStatus);
-
     // if (txnStatus === 'completed') {
     //   onClose();
     // }
   }, []);
 
   return (
-    <Modal size={'lg'} isCentered initialFocusRef={initialRef} finalFocusRef={finalRef} isOpen={isOpen} onClose={onClose}>
+    <Modal
+      size={"lg"}
+      isCentered
+      initialFocusRef={initialRef}
+      finalFocusRef={finalRef}
+      isOpen={isOpen}
+      onClose={onClose}
+    >
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>
-          Donate to {''}
+          Donate to {""}
           <Badge colorScheme="purple">{item.name}</Badge>
         </ModalHeader>
         <ModalCloseButton />
         <ModalBody pb={6}>
           <FormControl>
-            <FormLabel>To Address</FormLabel> <Input placeholder="To wallet address" value={item.owner} disabled />
+            <FormLabel>To Address</FormLabel>{" "}
+            <Input
+              placeholder="To wallet address"
+              value={item.owner}
+              disabled
+            />
           </FormControl>
 
           <FormControl>
             <FormLabel>Crypto</FormLabel>
 
-            <ButtonGroups className="bg-black" handleSelectButton={handleSelectButton} />
+            <ButtonGroups
+              className="bg-black"
+              handleSelectButton={handleSelectButton}
+            />
           </FormControl>
 
           <FormControl mt={4}>
             <FormLabel>Amount</FormLabel>
             <InputGroup>
-              <InputLeftElement pointerEvents="none" color="gray.300" fontSize="1.2em">
+              <InputLeftElement
+                pointerEvents="none"
+                color="gray.300"
+                fontSize="1.2em"
+              >
                 $
               </InputLeftElement>
               <Input

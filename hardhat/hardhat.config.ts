@@ -10,11 +10,6 @@ const config: HardhatUserConfig = {
       accounts: [process.env.PRIVATE_KEY as string],
       gasPrice: 100000000000,
     },
-
-    arbitrum_sepolia: {
-      url: 'https://sepolia-rollup.arbitrum.io/rpc',
-      accounts: [process.env.PRIVATE_KEY as string],
-    },
   },
   etherscan: {
     apiKey: process.env.ETHERSCAN_API,

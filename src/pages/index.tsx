@@ -63,8 +63,6 @@ export default function Home() {
         "any"
       );
 
-  
-
       const config = {
         biconomyPaymasterApiKey: chains[chainSelected].biconomyPaymasterApiKey,
         bundlerUrl: `https://bundler.biconomy.io/api/v2/${chains[chainSelected].chainId}/nJPK7B3ru.dd7f7861-190d-41bd-af80-6877f74b8f44`, // <-- Read about this at https://docs.biconomy.io/dashboard#bundler-url

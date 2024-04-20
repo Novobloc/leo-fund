@@ -1,15 +1,13 @@
-'use client';
-import Link from 'next/link';
-import ProjectCard from '@/components/_projects/project-card';
-import { Button, useDisclosure } from '@chakra-ui/react';
-import { useEffect, useState } from 'react';
-
+"use client";
+import Link from "next/link";
+import ProjectCard from "@/components/_projects/project-card";
+import { Button, useDisclosure } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
 
 const Project = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [projects, setProjects]: any = useState([]);
   const [selectedProject, setSelectedProject] = useState(projects?.[0]);
-
 
   useEffect(() => {
     handleGetProjects();
@@ -17,7 +15,7 @@ const Project = () => {
 
   const handleGetProjects = async () => {
     // const data = await getProjectCreated(selectedChain.chain.id);
-    const data:any = [];
+    const data: any = [];
     // console.log(data, 'projects', selectedChain.chain.name);
     setProjects(data);
   };
@@ -31,10 +29,15 @@ const Project = () => {
     <>
       <div className="mx-auto max-w-7xl sm:py-8 px-4 lg:px-8 ">
         <div className="sm:flex justify-between items-center">
-          <h3 className="text-midnightblue text-4xl lg:text-55xl font-semibold mb-5 sm:mb-0">Discover projects</h3>
+          <h3 className="text-midnightblue text-4xl lg:text-55xl font-semibold mb-5 sm:mb-0">
+            Discover projects
+          </h3>
           <Button onClick={handleGetProjects}> Refresh</Button>
 
-          <Link href={'/list-project'} className="text-blue-500 text-lg font-medium space-links font-mono">
+          <Link
+            href={"/list-project"}
+            className="text-blue-500 text-lg font-medium space-links font-mono"
+          >
             List Your Project&nbsp;&gt;&nbsp;
           </Link>
         </div>

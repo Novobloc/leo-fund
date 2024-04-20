@@ -13,7 +13,6 @@ import {
   Input,
 } from '@chakra-ui/react';
 import React, { useState, useEffect } from 'react';
-import { redirect } from 'next/navigation';
 
 const CreateProjectModal = ({ item, isOpen, onClose }: any) => {
   // const { address, sendUserOperation, txnStatus, resetTxnStatus, selectedChain } = useWallet();
