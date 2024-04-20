@@ -1,7 +1,16 @@
+import { useWallet } from "@/context/WalletContext";
 import Link from "next/link";
 import React from "react";
 
-export default function Header({ address, connectWallet }: any): JSX.Element {
+export default function Header(): JSX.Element {
+  const {
+    isAuthenticated,
+    smartAccountAddress,
+    connectWallet,
+    chainSelected,
+    setChainSelected,
+  } = useWallet();
+
   return (
     <section className="w-full h-[10vh] px-8 text-gray-700 bg-white">
       <div className="container flex flex-col flex-wrap items-center justify-between py-5 mx-auto md:flex-row max-w-7xl">
@@ -38,15 +47,15 @@ export default function Header({ address, connectWallet }: any): JSX.Element {
           </nav>
         </div>
 
-        {true && (
+        
           <button
-            disabled={"asddfs" ? true : false}
+            disabled={isAuthenticated ? true : false}
             onClick={connectWallet}
             className="inline-flex items-center px-2.5 py-1.5 border border-gray-300 shadow-sm text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
           >
-            {address ? `Connected to: ${address}` : "Connect Wallet"}
+            {isAuthenticated ? `Connected to: ${smartAccountAddress}` : "Connect Wallet"}
           </button>
-        )}
+  
       </div>
     </section>
   );
