@@ -33,8 +33,8 @@ export default function Home() {
       chainId: 84532,
       name: "Base Sepolia",
       providerUrl: "https://sepolia.base.org",
-      incrementCountContractAdd: "0xfeec89eC2afD503FF359487967D02285f7DaA9aD",
-      biconomyPaymasterApiKey: "TVDdBH-yz.5040805f-d795-4078-9fd1-b668b8817642",
+      incrementCountContractAdd: "0xC3eb56424077eb91889Bc102e400582378E77489",
+      biconomyPaymasterApiKey: "hyqnO0F1y.c88a83c3-3f63-48ab-958a-9c3dee381bf8",
       explorerUrl: "https://sepolia-explorer.base.org/",
     },
   ];
@@ -62,6 +62,8 @@ export default function Home() {
         magic.rpcProvider,
         "any"
       );
+
+  
 
       const config = {
         biconomyPaymasterApiKey: chains[chainSelected].biconomyPaymasterApiKey,
@@ -175,7 +177,7 @@ export default function Home() {
                 setChainSelected(1);
               }}
             >
-              Poly Amoy
+              Base Sepolia
             </div>
           </div>
           <button
