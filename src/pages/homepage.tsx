@@ -1,162 +1,46 @@
-import React, { useState, useEffect } from "react";
-import {
-  createSmartAccountClient,
-  BiconomySmartAccountV2,
-  PaymasterMode,
-} from "@biconomy/account";
-import { ethers } from "ethers";
-import { Magic } from "magic-sdk";
-import { contractABI } from "../contract/contractABI";
-import { toast } from "react-toastify";
+import React from "react";
 import "react-toastify/dist/ReactToastify.css";
+import Image from "next/image";
+import Link from "next/link";
 
 export default function Home() {
-  const [smartAccount, setSmartAccount] =
-    useState<BiconomySmartAccountV2 | null>(null);
-  const [smartAccountAddress, setSmartAccountAddress] = useState<string | null>(
-    null
-  );
-  const [count, setCount] = useState<string | null>(null);
-  const [txnHash, setTxnHash] = useState<string | null>(null);
-  const [chainSelected, setChainSelected] = useState<number>(0);
-
-  const chains = [
-    {
-      chainId: 11155111,
-      name: "Ethereum Sepolia",
-      providerUrl: "https://eth-sepolia.public.blastapi.io",
-      incrementCountContractAdd: "0xd9ea570eF1378D7B52887cE0342721E164062f5f",
-      biconomyPaymasterApiKey: "gJdVIBMSe.f6cc87ea-e351-449d-9736-c04c6fab56a2",
-      explorerUrl: "https://sepolia.etherscan.io/tx/",
-    },
-    {
-      chainId: 84532,
-      name: "Base Sepolia",
-      providerUrl: "https://sepolia.base.org",
-      incrementCountContractAdd: "0xC3eb56424077eb91889Bc102e400582378E77489",
-      biconomyPaymasterApiKey: "hyqnO0F1y.c88a83c3-3f63-48ab-958a-9c3dee381bf8",
-      explorerUrl: "https://sepolia-explorer.base.org/",
-    },
-  ];
-
-  let magic: any;
-
-  useEffect(() => {
-    // Initialize the Magic instance
-    //You can get your own API key by signing up for Magic here: https://dashboard.magic.link/signup
-    //Don't have an API KEY yet? Use this - "pk_live_B3CC63B614156D0E"
-    magic = new Magic("pk_live_B3CC63B614156D0E", {
-      network: {
-        rpcUrl: chains[chainSelected].providerUrl,
-        chainId: chains[chainSelected].chainId, // Polygon Amoy or change as per your preferred chain
-      },
-    });
-
-    console.log("Magic initialized", magic);
-  }, [chainSelected]);
-
-  const connect = async () => {
-    try {
-      await magic.wallet.connectWithUI();
-      const web3Provider = new ethers.providers.Web3Provider(
-        magic.rpcProvider,
-        "any"
-      );
-
-  
-
-      const config = {
-        biconomyPaymasterApiKey: chains[chainSelected].biconomyPaymasterApiKey,
-        bundlerUrl: `https://bundler.biconomy.io/api/v2/${chains[chainSelected].chainId}/nJPK7B3ru.dd7f7861-190d-41bd-af80-6877f74b8f44`, // <-- Read about this at https://docs.biconomy.io/dashboard#bundler-url
-      };
-
-      const smartWallet = await createSmartAccountClient({
-        signer: web3Provider.getSigner(),
-        biconomyPaymasterApiKey: config.biconomyPaymasterApiKey,
-        bundlerUrl: config.bundlerUrl,
-        rpcUrl: chains[chainSelected].providerUrl,
-        chainId: chains[chainSelected].chainId,
-      });
-
-      console.log("Biconomy Smart Account", smartWallet);
-      setSmartAccount(smartWallet);
-      const saAddress = await smartWallet.getAccountAddress();
-      console.log("Smart Account Address", saAddress);
-      setSmartAccountAddress(saAddress);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const getCountId = async () => {
-    const contractAddress = chains[chainSelected].incrementCountContractAdd;
-    const provider = new ethers.providers.JsonRpcProvider(
-      chains[chainSelected].providerUrl
-    );
-    const contractInstance = new ethers.Contract(
-      contractAddress,
-      contractABI,
-      provider
-    );
-    const countId = await contractInstance.getCount();
-    setCount(countId.toString());
-  };
-
-  const incrementCount = async () => {
-    try {
-      const toastId = toast("Populating Transaction", { autoClose: false });
-
-      const contractAddress = chains[chainSelected].incrementCountContractAdd;
-      const provider = new ethers.providers.JsonRpcProvider(
-        chains[chainSelected].providerUrl
-      );
-      const contractInstance = new ethers.Contract(
-        contractAddress,
-        contractABI,
-        provider
-      );
-      const minTx = await contractInstance.populateTransaction.increment();
-      console.log("Mint Tx Data", minTx.data);
-      const tx1 = {
-        to: contractAddress,
-        data: minTx.data,
-      };
-
-      toast.update(toastId, {
-        render: "Sending Transaction",
-        autoClose: false,
-      });
-
-      //@ts-ignore
-      const userOpResponse = await smartAccount?.sendTransaction(tx1, {
-        paymasterServiceData: { mode: PaymasterMode.SPONSORED },
-      });
-      //@ts-ignore
-      const { transactionHash } = await userOpResponse.waitForTxHash();
-      console.log("Transaction Hash", transactionHash);
-
-      if (transactionHash) {
-        toast.update(toastId, {
-          render: "Transaction Successful",
-          type: "success",
-          autoClose: 5000,
-        });
-        setTxnHash(transactionHash);
-        await getCountId();
-      }
-    } catch (error) {
-      console.log(error);
-      toast.error("Transaction Unsuccessful", { autoClose: 5000 });
-    }
-  };
-
   return (
-    <main className="flex min-h-screen flex-col items-center justify-start gap-8 p-24">
-      <div className="text-[4rem] font-bold text-orange-400">
-        Home
-      </div>
+    <section className="px-2 py-40 bg-white md:px-0 h-[90vh]">
+      <div className="container items-center max-w-6xl px-8 mx-auto xl:px-5">
+        <div className="flex flex-row-reverse flex-wrap items-center sm:-mx-3">
+          <div className="w-full md:w-1/2 md:px-3">
+            <div className="w-full pb-6 space-y-6 font  sm:max-w-md lg:max-w-lg md:space-y-4 lg:space-y-8 xl:space-y-9 sm:pr-5 lg:pr-0 md:pb-0">
+              <h1 className="text-5xl font-extrabold tracking-tight text-gray-900 sm:text-5xl md:text-5xl lg:text-5xl xl:text-5xl">
+                <span className="block xl:inline">
+                  Fund the projects that matter to you
+                </span>
+              </h1>
+              <p className="mx-auto text-base text-gray-500 sm:max-w-md  lg:text-xl md:max-w-3xl">
+                Not for profit. For people.
+              </p>
 
-      
-    </main>
+              <div className="relative flex flex-col sm:flex-row sm:space-x-4">
+                <Link
+                  href="/creator/profile"
+                  className="flex items-center px-6 py-3 text-black bg-white border border-black "
+                >
+                  Donate Now
+                </Link>
+              </div>
+            </div>
+          </div>
+
+          <div className="w-">
+            <Image
+              src="/images/_banner/bg.svg"
+              alt="nothing"
+              width={500}
+              height={400}
+              className=""
+            />
+          </div>
+        </div>
+      </div>
+    </section>
   );
 }
