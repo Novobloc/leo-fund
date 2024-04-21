@@ -15,7 +15,7 @@ const ProjectCard = ({
 
   return (
     <div className="w-full max-w-xl">
-      <div className="bg-white border m-3 px-3 pt-3 pb-12 my-20  rounded-lg">
+      <div className="bg-white border m-3 px-3 pt-3 pb-6 my-3  rounded-lg">
         <div className="px-3">
           <div className="w-full h-4 bg-green-100"></div>
           <h4 className="text-2xl font-bold pt-6 text-black">

@@ -7,7 +7,8 @@ import { useWallet } from "@/context/WalletContext";
 
 const Project = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-
+  const [projects, setProjects]: any = useState([]);
+  const [selectedProject, setSelectedProject] = useState(projects?.[0]);
   const {
     isAuthenticated,
     smartAccountAddress,
@@ -16,10 +17,7 @@ const Project = () => {
     createProject,
     fundEth,
     withdrawEth,
-    projects,
   } = useWallet();
-
-  const [selectedProject, setSelectedProject] = useState(projects?.[0]);
 
   useEffect(() => {
     isAuthenticated && handleGetProjects();
@@ -28,6 +26,8 @@ const Project = () => {
   const handleGetProjects = async () => {
     const data: any = await getAllProjects();
     console.log(data, "data");
+
+    setProjects(data);
   };
 
   const handleSelectProject = (item: any) => {
@@ -54,14 +54,9 @@ const Project = () => {
     <>
       <div className="mx-auto max-w-7xl sm:py-8 px-4 lg:px-8 ">
         <div className="sm:flex justify-between items-center">
-          <h3 className="text-midnightblue text-4xl lg:text-55xl font-semibold mb-5 sm:mb-0">
+          <h3 className="text-midnightblue text-4xl lg:text-55xl font-semibold mb-10 ">
             Discover projects
           </h3>
-          <Button onClick={handleGetProjects}> GetAllProjects</Button>
-          {/* <Button onClick={handleCreateProject}> Create</Button> */}
-          <Button onClick={handleGetProjectFundInUSD}> Get Funds</Button>
-          <Button onClick={handleFundEth}> Fund</Button>
-          <Button onClick={handleWithdrawEth}> Withdraw</Button>
 
           <Link
             href={"/addproject"}
