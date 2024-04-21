@@ -25,9 +25,9 @@ Video : <a style="margin-bottom: 5px;" href="put the video like here" target="_b
 1. Frontend: We used Next JS, Tailwind CSS for UI and ethers library to fetch details from contract.
 2. Blockchain :
    - Biconomy: We used Biconomy SDK for features like social login, gas less transactions.
-   - Chain: Base Sepolia to connect with blockchain on testnet.
+   - Base: We used Base Sepolia as chain to connect with blockchain on testnet.
    - RPC URL : We used Alchemy RPC url to connect to the base sepolia chain.
-   - Chainlink: we have used Chainlink for converting crypto to USD in real time using data feeds.
+   - Chainlink: We have used Chainlink for converting crypto to USD in real time using data feeds.
 
 ## Steps to Run the Project
 
