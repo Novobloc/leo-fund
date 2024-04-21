@@ -312,7 +312,9 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
 
   const withdrawEth = async (projectNo: number) => {
     try {
-      const toastId = toast("Funding ETH to Project", { autoClose: false });
+      const toastId = toast("Withdrawing ETH from Project", {
+        autoClose: false,
+      });
       const contractAddress = config.MAIN_CONTRACT(
         chains[chainSelected].chainId
       ).ADDRESS;
@@ -323,13 +325,11 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
         provider
       );
 
-      // Convert amount to Wei
-
       // Prepare transaction data
-      const minTx = await contractInstance.populateTransaction.fundEth(
+      const minTx = await contractInstance.populateTransaction.withdrawEth(
         projectNo
       );
-      console.log("Fund ETH Tx Data", minTx.data);
+      console.log("Withdrawing ETH Tx Data", minTx.data);
 
       // Create transaction object
       const tx1: any = {
@@ -405,9 +405,9 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
     return newTokenBalances;
   };
 
-  // useEffect(() => {
-  //   connectWallet();
-  // }, [chainSelected]);
+  useEffect(() => {
+    connectWallet();
+  }, [chainSelected]);
 
   return (
     <WalletContext.Provider
