@@ -15,42 +15,32 @@ import {
   InputLeftElement,
   Badge,
 } from "@chakra-ui/react";
-
-import { ButtonGroups } from "./button-groups";
+import { useWallet } from "@/context/WalletContext";
 
 const DonateModal = ({ item, isOpen, onClose, index }: any) => {
   const initialRef = React.useRef(null);
   const finalRef = React.useRef(null);
 
-  const [selectedCrypto, setSelectedCrypto]: any = useState(null);
+  const { fundEth } = useWallet();
+
   const [selectedAmount, setSelectedAmount]: any = useState(null);
   const [loading, setLoading] = useState(false);
 
   // Function to handle funding Ethereum
-  const handleFundEth = async () => {
-    console.log();
-
-  };
-
-  const handleConfirm = async () => {
-    if (selectedCrypto === "ETH") {
-      await handleFundEth();
-    }
+  const handleFundEth = async (selectedAmount: any, projectNumber: any) => {
+    console.log("Funding Ethereum");
+    await fundEth(projectNumber, selectedAmount);
   };
 
   const handleSubmit = async (e: any) => {
     setLoading(true);
     e.preventDefault();
-    console.log(selectedAmount, selectedCrypto, index);
-    await handleConfirm();
+    console.log(selectedAmount, index);
+    await handleFundEth(selectedAmount, index);
     setLoading(false);
     setTimeout(() => {
       // resetTxnStatus();
     }, 2000);
-  };
-
-  const handleSelectButton = async (value: string) => {
-    setSelectedCrypto(value);
   };
 
   useEffect(() => {
@@ -83,15 +73,6 @@ const DonateModal = ({ item, isOpen, onClose, index }: any) => {
               placeholder="To wallet address"
               value={item.owner}
               disabled
-            />
-          </FormControl>
-
-          <FormControl>
-            <FormLabel>Crypto</FormLabel>
-
-            <ButtonGroups
-              className="bg-black"
-              handleSelectButton={handleSelectButton}
             />
           </FormControl>
 

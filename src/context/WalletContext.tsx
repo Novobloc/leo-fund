@@ -244,6 +244,7 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
       ).ADDRESS;
 
       console.log("contractAddress: ", contractAddress);
+      console.log("projectNo: ", projectNo, "amount:" , amount);
 
       const contractInstance = new ethers.Contract(
         contractAddress,

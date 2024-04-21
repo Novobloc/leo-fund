@@ -1,22 +1,28 @@
 "use client";
 import { useEffect, useState } from "react";
-import { ArrowDownIcon, ArrowTopRightOnSquareIcon } from "@heroicons/react/24/solid";
+import {
+  ArrowDownIcon,
+  ArrowTopRightOnSquareIcon,
+} from "@heroicons/react/24/solid";
 import { openTransak } from "@/components/_onramp/transak";
 import { ArrowUpIcon } from "@heroicons/react/20/solid";
-import WithdrawModal from "@/components/_projects/withdraw-modal";
-import { Button, useDisclosure } from "@chakra-ui/react";
+import { Button } from "@chakra-ui/react";
 import { useWallet } from "@/context/WalletContext";
 
 const Home = () => {
-  const { isAuthenticated, smartAccountAddress, getAllProjects, withdrawEth, getWalletBalances, tokenBalances } =
-    useWallet();
+  const {
+    isAuthenticated,
+    smartAccountAddress,
+    getAllProjects,
+    withdrawEth,
+    getWalletBalances,
+    tokenBalances,
+  } = useWallet();
 
   const [projects, setProjects]: any = useState([]);
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const [selectedProject, setSelectedProject] = useState(projects?.[0]);
 
   const handleGetBalances = async () => {
-    await getWalletBalances()
+    await getWalletBalances();
   };
   console.log(tokenBalances, "tokenBalances");
 
@@ -37,7 +43,7 @@ const Home = () => {
   };
 
   const handleWithdraw = (item: any) => {
-    withdrawEth(0)
+    withdrawEth(0);
   };
 
   useEffect(() => {
@@ -141,31 +147,44 @@ const Home = () => {
                                           </thead>
                                           <tbody className="divide-y divide-gray-200 bg-white">
                                             {tokenBalances.length > 0 &&
-                                              tokenBalances.map((transaction: any, i: any) => (
-                                                <tr key={i}>
-                                                  <td className="whitespace-nowrap py-2 pl-4 pr-3 text-sm text-gray-500 sm:pl-6 flex items-center gap-3">
-                                                    {
-                                                      <button
-                                                        className={`w-8 h-8  text-white bg-gradient-to-r from-cyan-500  to-gold rounded-full border-slate-400 focus:outline-none`}
-                                                      ></button>
-                                                    }{' '}
-                                                    {transaction?.symbol || ''}
-                                                  </td>
-                                                  <td className="whitespace-nowrap px-2 py-2 text-sm font-medium text-gray-900">
-                                                    {transaction.amount || ''}
-                                                  </td>
-                                                  <td className="whitespace-nowrap px-6 py-4 text-right text-sm font-medium">
-                                                    <a href={transaction?.meta?.viewURL || ''} target="_blank" rel="noreferrer">
-                                                      <ArrowTopRightOnSquareIcon width={15} />
-                                                    </a>
-                                                  </td>
+                                              tokenBalances.map(
+                                                (transaction: any, i: any) => (
+                                                  <tr key={i}>
+                                                    <td className="whitespace-nowrap py-2 pl-4 pr-3 text-sm text-gray-500 sm:pl-6 flex items-center gap-3">
+                                                      {
+                                                        <button
+                                                          className={`w-8 h-8  text-white bg-gradient-to-r from-cyan-500  to-gold rounded-full border-slate-400 focus:outline-none`}
+                                                        ></button>
+                                                      }{" "}
+                                                      {transaction?.symbol ||
+                                                        ""}
+                                                    </td>
+                                                    <td className="whitespace-nowrap px-2 py-2 text-sm font-medium text-gray-900">
+                                                      {transaction.amount || ""}
+                                                    </td>
+                                                    <td className="whitespace-nowrap px-6 py-4 text-right text-sm font-medium">
+                                                      <a
+                                                        href={
+                                                          transaction?.meta
+                                                            ?.viewURL || ""
+                                                        }
+                                                        target="_blank"
+                                                        rel="noreferrer"
+                                                      >
+                                                        <ArrowTopRightOnSquareIcon
+                                                          width={15}
+                                                        />
+                                                      </a>
+                                                    </td>
+                                                  </tr>
+                                                )
+                                              )}
+                                            {tokenBalances &&
+                                              tokenBalances.length === 0 && (
+                                                <tr className="whitespace-nowrap px-6 py-4 text-sm text-gray-500 text-center w-full ">
+                                                  No Records Found
                                                 </tr>
-                                              ))}
-                                            {tokenBalances && tokenBalances.length === 0 && (
-                                              <tr className="whitespace-nowrap px-6 py-4 text-sm text-gray-500 text-center w-full ">
-                                                No Records Found
-                                              </tr>
-                                            )}
+                                              )}
                                           </tbody>
                                         </table>
                                       </div>
@@ -217,13 +236,6 @@ const Home = () => {
           </ul>
           {(!projects || projects?.length === 0) && (
             <span className="py-4 mx-auto">No data</span>
-          )}
-          {isOpen && (
-            <WithdrawModal
-              item={selectedProject}
-              onClose={onClose}
-              isOpen={isOpen}
-            />
           )}
         </div>
       </div>

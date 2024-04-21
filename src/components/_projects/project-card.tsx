@@ -1,8 +1,4 @@
-import {
-  StarIcon,
-  CurrencyDollarIcon,
-  ArrowTopRightOnSquareIcon,
-} from "@heroicons/react/24/solid";
+import { CurrencyDollarIcon } from "@heroicons/react/24/solid";
 import { Button, Code } from "@chakra-ui/react";
 import DonateModal from "./donate-modal";
 
@@ -24,7 +20,7 @@ const ProjectCard = ({
     <div className="w-full max-w-xl">
       <div className="bg-white border m-3 px-3 pt-3 pb-12 my-20  rounded-lg">
         <div className="px-3">
-         <div className="w-full h-4 bg-green-100"></div>
+          <div className="w-full h-4 bg-green-100"></div>
           <h4 className="text-2xl font-bold pt-6 text-black">
             {item.projectName}
           </h4>
@@ -36,13 +32,14 @@ const ProjectCard = ({
           <br />
           <div className="flex flex-col justify-end  item-center py-1">
             <h3 className="text-xl font-medium font-mono">
-              Funds raised in ETH : ${utils.formatEther(item.balance)?.toString()}
+              Funds raised in ETH : $
+              {utils.formatEther(item.balance)?.toString()}
             </h3>
             <h3 className="text-xl font-medium font-mono">
               Funds raised in USD : ${item?.livePrices?.ethBalance}
             </h3>
           </div>
-    
+
           <hr style={{ color: "#C4C4C4" }} />
           <div className="flex justify-between pt-6 w-full max-w-7xl">
             <Button
