@@ -62,17 +62,17 @@ const Project = () => {
           <h3 className="text-midnightblue text-4xl lg:text-55xl font-semibold mb-5 sm:mb-0">
             Discover projects
           </h3>
-          <Button onClick={handleGetProjects}> Refresh</Button>
+          <Button onClick={handleGetProjects}> GetAllProjects</Button>
           <Button onClick={handleCreateProject}> Create</Button>
           <Button onClick={handleGetProjectFundInUSD}> Get Funds</Button>
           <Button onClick={handleFundEth}> Fund</Button>
           <Button onClick={handleWithdrawEth}> Withdraw</Button>
 
           <Link
-            href={"/list-project"}
+            href={"/addprojec"}
             className="text-blue-500 text-lg font-medium space-links font-mono"
           >
-            List Your Project&nbsp;&gt;&nbsp;
+            Add Project&nbsp;&gt;&nbsp;
           </Link>
         </div>
 

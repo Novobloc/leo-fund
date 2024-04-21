@@ -143,7 +143,7 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
       const projects = response.map((project: any) => {
         const item = {
           projectName: project[0],
-          balance: project[1].toNumber(),
+          balance: project[1],
           owner: project[2],
         };
         return item;
@@ -234,8 +234,7 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
         chains[chainSelected].chainId
       ).ADDRESS;
 
-      
-      console.log('contractAddress: ', contractAddress);
+      console.log("contractAddress: ", contractAddress);
 
       const contractInstance = new ethers.Contract(
         contractAddress,
@@ -262,7 +261,7 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
         value: amountInWei, // Include ETH value in the transaction
       };
 
-      console.log(tx1)
+      console.log(tx1);
 
       // Update toast and send transaction
       toast.update(toastId, {
@@ -306,7 +305,7 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
 
       // Prepare transaction data
       const minTx = await contractInstance.populateTransaction.fundEth(
-        projectNo,
+        projectNo
       );
       console.log("Fund ETH Tx Data", minTx.data);
 

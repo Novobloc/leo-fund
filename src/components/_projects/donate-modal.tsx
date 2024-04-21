@@ -21,26 +21,18 @@ import { ButtonGroups } from "./button-groups";
 const DonateModal = ({ item, isOpen, onClose, index }: any) => {
   const initialRef = React.useRef(null);
   const finalRef = React.useRef(null);
-  // const { sendUserOperation, txnStatus, resetTxnStatus, selectedChain } = useWallet();
+
   const [selectedCrypto, setSelectedCrypto]: any = useState(null);
   const [selectedAmount, setSelectedAmount]: any = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const handleFundUSDC = async () => {
-    // const { uo }: any = await fundUSDC(selectedAmount, index, selectedChain.chain.id);
-    // await sendUserOperation(uo);
-  };
-
   // Function to handle funding Ethereum
   const handleFundEth = async () => {
-    // const { uo }: any = await fundEth(selectedAmount, index, selectedChain.chain.id); // Adjust arguments as needed
-    // await sendUserOperation(uo);
+    console.log();
+
   };
 
   const handleConfirm = async () => {
-    if (selectedCrypto === "USDC") {
-      await handleFundUSDC();
-    }
     if (selectedCrypto === "ETH") {
       await handleFundEth();
     }
