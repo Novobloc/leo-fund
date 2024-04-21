@@ -1,37 +1,49 @@
 "use client";
 import { useEffect, useState } from "react";
-import { ArrowDownIcon, ArrowRightIcon } from "@heroicons/react/24/solid";
+import { ArrowDownIcon, ArrowTopRightOnSquareIcon } from "@heroicons/react/24/solid";
 import { openTransak } from "@/components/_onramp/transak";
-import {
-  ArrowTopRightOnSquareIcon,
-  ArrowUpIcon,
-} from "@heroicons/react/20/solid";
+import { ArrowUpIcon } from "@heroicons/react/20/solid";
 import WithdrawModal from "@/components/_projects/withdraw-modal";
 import { Button, useDisclosure } from "@chakra-ui/react";
+import { useWallet } from "@/context/WalletContext";
 
 const Home = () => {
+  const { isAuthenticated, smartAccountAddress, getAllProjects, withdrawEth, getWalletBalances, tokenBalances } =
+    useWallet();
+
   const [projects, setProjects]: any = useState([]);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [selectedProject, setSelectedProject] = useState(projects?.[0]);
 
-  const handleGetBalances = async () => {};
+  const handleGetBalances = async () => {
+    await getWalletBalances()
+  };
+  console.log(tokenBalances, "tokenBalances");
 
   const handleGetProjects = async () => {
-    if (true) {
-      //   const data = await getProjectCreated(selectedChain.chain.id);
+    const data: any = await getAllProjects();
+    console.log(data, "data");
+    if (data && data.length > 0) {
+      const ownedProjects = data.filter((i: any) => {
+        return (
+          i.owner.toLowerCase() === (smartAccountAddress?.toLowerCase() || "")
+        );
+      });
 
-      setProjects([]);
+      console.log(ownedProjects, "ownedProjects");
+
+      setProjects(ownedProjects);
     }
   };
-  const handleSelectProject = (item: any) => {
-    setSelectedProject(item);
-    onOpen();
+
+  const handleWithdraw = (item: any) => {
+    withdrawEth(0)
   };
 
   useEffect(() => {
     handleGetBalances();
     handleGetProjects();
-  }, []);
+  }, [isAuthenticated]);
 
   return (
     <>
@@ -98,19 +110,6 @@ const Home = () => {
                                   <h2 className="leading-6 text-xl font-semibold text-gray-900 font-sans  lg:-mx-2">
                                     Balance
                                   </h2>
-                                  <div className=" px-4 text-right sm:px-6 -my-4">
-                                    <button
-                                      type="submit"
-                                      className="uppercase inline-flex text-blue-600 hover:text-orange-900"
-                                    >
-                                      {" "}
-                                      View All
-                                      <ArrowRightIcon
-                                        className="h-5 w-5 ml-2"
-                                        aria-hidden="true"
-                                      />
-                                    </button>
-                                  </div>
                                 </div>
 
                                 <div className="mt-4 flex flex-col">
@@ -140,7 +139,7 @@ const Home = () => {
                                               </th>
                                             </tr>
                                           </thead>
-                                          {/* <tbody className="divide-y divide-gray-200 bg-white">
+                                          <tbody className="divide-y divide-gray-200 bg-white">
                                             {tokenBalances.length > 0 &&
                                               tokenBalances.map((transaction: any, i: any) => (
                                                 <tr key={i}>
@@ -167,7 +166,7 @@ const Home = () => {
                                                 No Records Found
                                               </tr>
                                             )}
-                                          </tbody> */}
+                                          </tbody>
                                         </table>
                                       </div>
                                     </div>
@@ -179,39 +178,6 @@ const Home = () => {
                         </section>
                       </div>
                     </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="mx-auto max-w-7xl">
-                <div>
-                  <div className="grid grid-cols-1 gap-4 lg:col-span-2 ">
-                    <section aria-labelledby="section-1-title">
-                      <div className="overflow-hidden rounded-lg bg-white shadow">
-                        <div className="p-6">
-                          <div>
-                            <div>
-                              <h2 className="leading-6 text-xl font-semibold text-gray-900 font-sans  ">
-                                NFT Balance
-                              </h2>
-                              <div className=" px-4 text-right sm:px-6 -my-4">
-                                <button
-                                  type="submit"
-                                  className="uppercase inline-flex text-blue-600 hover:text-orange-900"
-                                >
-                                  {" "}
-                                  View All
-                                  <ArrowRightIcon
-                                    className="h-5 w-5 ml-2"
-                                    aria-hidden="true"
-                                  />
-                                </button>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </section>
                   </div>
                 </div>
               </div>
@@ -233,7 +199,7 @@ const Home = () => {
                   <div className="min-w-0">
                     <div className="flex items-start gap-x-3">
                       <p className="text-sm font-semibold leading-6 text-gray-900">
-                        {project.name}
+                        {project.projectName}
                       </p>
                     </div>
                   </div>
@@ -241,7 +207,7 @@ const Home = () => {
                     <Button
                       backgroundColor={"black"}
                       color={"white"}
-                      onClick={() => handleSelectProject(project)}
+                      onClick={() => handleWithdraw(project)}
                     >
                       Withdraw
                     </Button>
