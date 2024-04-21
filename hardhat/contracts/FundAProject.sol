@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.20;
 
-// 0x9fa59846373ca89e0637fC3A1A1289437A0577C5
+// 0x2975f44770F683632DA105a5f75D50b95249C6ec
 
 import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 
@@ -63,5 +63,9 @@ contract FundAProject {
 
     function getBalance() public view returns (uint256) {
         return address(this).balance;
+    }
+
+    function getAllProjects() public view returns (Project[] memory) {
+        return projects;
     }
 }

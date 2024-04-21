@@ -157,7 +157,7 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
         response.map(async (project: any, i: any) => {
           const _fundRaisedInUsd: any = await getProjectFundInUSD(i);
           console.log(_fundRaisedInUsd, "_fundRaisedInUsd");
-          const fundRaisedInUsd = _fundRaisedInUsd/100000000
+          const fundRaisedInUsd = _fundRaisedInUsd / 100000000;
           console.log(fundRaisedInUsd, "fundRaisedInUsd");
 
           const item = {
@@ -405,9 +405,9 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
     return newTokenBalances;
   };
 
-  useEffect(() => {
-    connectWallet();
-  }, [chainSelected]);
+  // useEffect(() => {
+  //   connectWallet();
+  // }, [chainSelected]);
 
   return (
     <WalletContext.Provider
