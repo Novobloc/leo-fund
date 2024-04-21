@@ -19,7 +19,7 @@
 
 Github : <a style="margin-bottom: 5px;" href="https://github.com/Novobloc/leo-fund" target="_blank"> Repo Link </a>
 
-Video : <a style="margin-bottom: 5px;" href="put the video like here" target="_blank"> Youtube Link </a>
+Video : <a style="margin-bottom: 5px;" href="https://www.loom.com/share/115f21b210d547bc95d88e3978b66d0d?sid=5635fe59-ea20-43c7-97aa-68d4b8a912f1" target="_blank"> Youtube Link </a>
 
 ## Stack We Used
 1. Frontend: We used Next JS, Tailwind CSS for UI and ethers library to fetch details from contract.
