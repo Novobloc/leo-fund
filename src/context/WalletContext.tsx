@@ -11,6 +11,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import _ from "lodash";
 import { config } from "@/constants/config";
 import { toast } from "react-toastify";
+import { Alchemy, Network } from 'alchemy-sdk';
 
 type Chain = {
   chainId: number;
@@ -27,6 +28,7 @@ interface WalletContextType {
   isAuthenticated: boolean;
   connectWallet: () => Promise<void>;
   chainSelected: number;
+  tokenBalances: any;
   setChainSelected: React.Dispatch<React.SetStateAction<number>>;
   smartAccount: BiconomySmartAccountV2 | null;
   getAllProjects: () => Promise<any>;
@@ -34,6 +36,7 @@ interface WalletContextType {
   createProject: (name: string) => Promise<any>;
   fundEth: (projectNo: number, amount: string) => Promise<any>;
   withdrawEth: (projectNo: number) => Promise<any>;
+  getWalletBalances:  () => Promise<any>;
 }
 
 interface WalletProviderProps {
@@ -59,6 +62,8 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
     null
   );
   const [chainSelected, setChainSelected] = useState<number>(1);
+  const [tokenBalances, setTokenBalances] = useState<any>([]);
+  const [alchemyClient, setAlchemyClient] = useState<any>(null);
 
   const chains: Chain[] = [
     {
@@ -103,6 +108,12 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
       console.log(_provider, "_provider");
       setProvider(_provider);
 
+      const alchemy = new Alchemy({
+        network: Network.BASE_SEPOLIA,
+        apiKey: "glA0R7ResM-huSm9Dazi6G8T4sksMrSA",
+      });
+      setAlchemyClient(alchemy);
+
       const config = {
         biconomyPaymasterApiKey: chains[chainSelected].biconomyPaymasterApiKey,
         bundlerUrl: `https://bundler.biconomy.io/api/v2/${chains[chainSelected].chainId}/nJPK7B3ru.dd7f7861-190d-41bd-af80-6877f74b8f44`,
@@ -139,7 +150,7 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
         provider
       );
       const response = await contractInstance.getAllProjects();
-
+ 
       const projects = response.map((project: any) => {
         const item = {
           projectName: project[0],
@@ -171,9 +182,7 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
         projectNo
       );
 
-      console.log(ethPriceDataFeed.toNumber(), "ethPriceDataFeed");
-
-      return ethPriceDataFeed.toNumber();
+      return ethers.utils.formatEther(ethPriceDataFeed);
     } catch (error) {
       console.error(error);
     }
@@ -340,6 +349,41 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
     }
   };
 
+  const getTokenMetaData = async (tokenAddress: string) => {
+    const tokenMetaData = await alchemyClient?.core?.getTokenMetadata(tokenAddress);
+    return tokenMetaData;
+  };
+
+  const getWalletBalances = async () => {
+    const _tokenBalance = await alchemyClient?.core?.getBalance(smartAccountAddress);
+    const _tokenBalances = await alchemyClient?.core?.getTokenBalances(smartAccountAddress);
+console.log(_tokenBalances, "_tokenBalances");
+console.log(_tokenBalance, "_tokenBalance");
+
+    const promises = await _tokenBalances?.tokenBalances.map(async (item: any) => {
+      const metaData = await getTokenMetaData(item.contractAddress);
+      if (metaData) {
+        const amount = item.tokenBalance / Math.pow(10, metaData.decimals);
+        item.amount = amount.toFixed(2);
+        delete item.tokenBalance;
+        delete metaData.logo;
+      }
+      return { ...item, ...metaData };
+    });
+
+    const tokenBalancesNew = await Promise.all(promises);
+    const nativeTokenBalance = {
+      contractAddress: '0x00000000000000000000000000',
+      amount: (parseInt(BigInt(_tokenBalance?._hex).toString()) / Math.pow(10, 18)).toFixed(3),
+      decimals: 18,
+      name: 'Native Token',
+      symbol: 'ETH',
+    };
+    const newTokenBalances = [...tokenBalancesNew, nativeTokenBalance];
+    setTokenBalances(newTokenBalances);
+    return newTokenBalances;
+  };
+
   useEffect(() => {
     connectWallet();
   }, [chainSelected]);
@@ -359,6 +403,8 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
         createProject,
         fundEth,
         withdrawEth,
+        getWalletBalances,
+        tokenBalances
       }}
     >
       {children}
