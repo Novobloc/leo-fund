@@ -1,1 +1,1 @@
-# ETH Dubai 2024
+# LEO Fund
