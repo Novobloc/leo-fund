@@ -14,12 +14,13 @@ const Home = () => {
     isAuthenticated,
     smartAccountAddress,
     getAllProjects,
+    projects,
     withdrawEth,
     getWalletBalances,
     tokenBalances,
   } = useWallet();
 
-  const [projects, setProjects]: any = useState([]);
+  const [projectsData, setProjectsData]: any = useState([]);
 
   const handleGetBalances = async () => {
     await getWalletBalances();
@@ -29,7 +30,7 @@ const Home = () => {
   const handleGetProjects = async () => {
     const data: any = await getAllProjects();
     console.log(data, "data");
-    if (data && data.length > 0) {
+    if (projects && projects.length > 0) {
       const ownedProjects = data.filter((i: any) => {
         return (
           i.owner.toLowerCase() === (smartAccountAddress?.toLowerCase() || "")
@@ -38,7 +39,7 @@ const Home = () => {
 
       console.log(ownedProjects, "ownedProjects");
 
-      setProjects(ownedProjects);
+      setProjectsData(ownedProjects);
     }
   };
 
@@ -209,8 +210,8 @@ const Home = () => {
             Your Projects
           </h2>
           <ul role="list" className="divide-y divide-gray-100">
-            {projects &&
-              projects.map((project: any) => (
+            {projectsData &&
+              projectsData.map((project: any) => (
                 <li
                   key={project.name}
                   className="flex items-center justify-between gap-x-6 py-5"
@@ -234,7 +235,7 @@ const Home = () => {
                 </li>
               ))}
           </ul>
-          {(!projects || projects?.length === 0) && (
+          {(!projectsData || projectsData?.length === 0) && (
             <span className="py-4 mx-auto">No data</span>
           )}
         </div>

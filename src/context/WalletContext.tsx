@@ -11,7 +11,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import _ from "lodash";
 import { config } from "@/constants/config";
 import { toast } from "react-toastify";
-import { Alchemy, Network } from 'alchemy-sdk';
+import { Alchemy, Network } from "alchemy-sdk";
 
 type Chain = {
   chainId: number;
@@ -36,7 +36,8 @@ interface WalletContextType {
   createProject: (name: string) => Promise<any>;
   fundEth: (projectNo: number, amount: string) => Promise<any>;
   withdrawEth: (projectNo: number) => Promise<any>;
-  getWalletBalances:  () => Promise<any>;
+  getWalletBalances: () => Promise<any>;
+  projects: any;
 }
 
 interface WalletProviderProps {
@@ -64,6 +65,7 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
   const [chainSelected, setChainSelected] = useState<number>(1);
   const [tokenBalances, setTokenBalances] = useState<any>([]);
   const [alchemyClient, setAlchemyClient] = useState<any>(null);
+  const [projects, setProjects] = useState<any>([]);
 
   const chains: Chain[] = [
     {
@@ -150,17 +152,18 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
         provider
       );
       const response = await contractInstance.getAllProjects();
- 
-      const projects = response.map((project: any) => {
+
+      const _projects = response.map((project: any, i: any) => {
         const item = {
           projectName: project[0],
           balance: project[1],
           owner: project[2],
+          index: i
         };
         return item;
       });
-
-      return projects;
+      setProjects(_projects)
+      return _projects;
     } catch (error) {
       console.error(error);
     }
@@ -244,7 +247,7 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
       ).ADDRESS;
 
       console.log("contractAddress: ", contractAddress);
-      console.log("projectNo: ", projectNo, "amount:" , amount);
+      console.log("projectNo: ", projectNo, "amount:", amount);
 
       const contractInstance = new ethers.Contract(
         contractAddress,
@@ -351,34 +354,42 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
   };
 
   const getTokenMetaData = async (tokenAddress: string) => {
-    const tokenMetaData = await alchemyClient?.core?.getTokenMetadata(tokenAddress);
+    const tokenMetaData = await alchemyClient?.core?.getTokenMetadata(
+      tokenAddress
+    );
     return tokenMetaData;
   };
 
   const getWalletBalances = async () => {
-    const _tokenBalance = await alchemyClient?.core?.getBalance(smartAccountAddress);
-    const _tokenBalances = await alchemyClient?.core?.getTokenBalances(smartAccountAddress);
-console.log(_tokenBalances, "_tokenBalances");
-console.log(_tokenBalance, "_tokenBalance");
+    const _tokenBalance = await alchemyClient?.core?.getBalance(
+      smartAccountAddress
+    );
+    const _tokenBalances = await alchemyClient?.core?.getTokenBalances(
+      smartAccountAddress
+    );
 
-    const promises = await _tokenBalances?.tokenBalances.map(async (item: any) => {
-      const metaData = await getTokenMetaData(item.contractAddress);
-      if (metaData) {
-        const amount = item.tokenBalance / Math.pow(10, metaData.decimals);
-        item.amount = amount.toFixed(2);
-        delete item.tokenBalance;
-        delete metaData.logo;
+    const promises = await _tokenBalances?.tokenBalances.map(
+      async (item: any) => {
+        const metaData = await getTokenMetaData(item.contractAddress);
+        if (metaData) {
+          const amount = item.tokenBalance / Math.pow(10, metaData.decimals);
+          item.amount = amount.toFixed(2);
+          delete item.tokenBalance;
+          delete metaData.logo;
+        }
+        return { ...item, ...metaData };
       }
-      return { ...item, ...metaData };
-    });
+    );
 
     const tokenBalancesNew = await Promise.all(promises);
     const nativeTokenBalance = {
-      contractAddress: '0x00000000000000000000000000',
-      amount: (parseInt(BigInt(_tokenBalance?._hex).toString()) / Math.pow(10, 18)).toFixed(3),
+      contractAddress: "0x00000000000000000000000000",
+      amount: (
+        parseInt(BigInt(_tokenBalance?._hex).toString()) / Math.pow(10, 18)
+      ).toFixed(3),
       decimals: 18,
-      name: 'Native Token',
-      symbol: 'ETH',
+      name: "Native Token",
+      symbol: "ETH",
     };
     const newTokenBalances = [...tokenBalancesNew, nativeTokenBalance];
     setTokenBalances(newTokenBalances);
@@ -405,7 +416,8 @@ console.log(_tokenBalance, "_tokenBalance");
         fundEth,
         withdrawEth,
         getWalletBalances,
-        tokenBalances
+        tokenBalances,
+        projects
       }}
     >
       {children}
