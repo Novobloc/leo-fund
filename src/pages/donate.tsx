@@ -46,7 +46,7 @@ const Project = () => {
   };
 
   const handleFundEth = async (item: any) => {
-    const data3: any = await fundEth(0, 10000000000000000);
+    const data3: any = await fundEth(0, "0.01");
     console.log(data3, "data3");
   };
 

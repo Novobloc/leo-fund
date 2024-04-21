@@ -32,7 +32,7 @@ interface WalletContextType {
   getAllProjects: () => Promise<any>;
   getProjectFundInUSD: (projectNumber: number) => Promise<any>;
   createProject: (name: string) => Promise<any>;
-  fundEth: (projectNo: number, amount: number) => Promise<any>;
+  fundEth: (projectNo: number, amount: string) => Promise<any>;
   withdrawEth: (projectNo: number) => Promise<any>;
 }
 
@@ -227,12 +227,15 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
     }
   };
 
-  const fundEth = async (projectNo: number, amount: number) => {
+  const fundEth = async (projectNo: number, amount: string) => {
     try {
       const toastId = toast("Funding ETH to Project", { autoClose: false });
       const contractAddress = config.MAIN_CONTRACT(
         chains[chainSelected].chainId
       ).ADDRESS;
+
+      
+      console.log('contractAddress: ', contractAddress);
 
       const contractInstance = new ethers.Contract(
         contractAddress,
@@ -241,7 +244,7 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
       );
 
       // Convert amount to Wei
-      const amountInWei = ethers.utils.parseEther(amount.toString());
+      const amountInWei = ethers.utils.parseEther(amount);
 
       // Prepare transaction data
       const minTx = await contractInstance.populateTransaction.fundEth(
@@ -258,6 +261,8 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
         data: minTx.data,
         value: amountInWei, // Include ETH value in the transaction
       };
+
+      console.log(tx1)
 
       // Update toast and send transaction
       toast.update(toastId, {
