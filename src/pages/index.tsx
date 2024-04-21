@@ -21,7 +21,7 @@ export default function Index() {
 
               <div className="relative flex flex-col sm:flex-row sm:space-x-4">
                 <Link
-                  href="/creator/profile"
+                  href="/donate"
                   className="flex items-center px-6 py-3 text-black bg-white border border-black "
                 >
                   Donate Now
@@ -29,6 +29,7 @@ export default function Index() {
               </div>
             </div>
           </div>
+          <section className="bg-white pt-7 pb-14 tails-selected-element"></section>
 
           <div className="w-">
             <Image
@@ -38,6 +39,37 @@ export default function Index() {
               height={400}
               className=""
             />
+          </div>
+        </div>
+        <br />
+        <br />
+        <div className="container px-8 mx-auto sm:px-12 lg:px-20">
+          <h1 className="text-sm font-bold tracking-wide text-center text-gray-800 uppercase mb-7">
+            BUILT WITH
+          </h1>
+          <div className=" grid items-center justify-center grid-cols-6 gap-y-8">
+            <div className="flex items-center justify-center col-span-6 sm:col-span-4 md:col-span-3 xl:col-span-2">
+              <img
+                src="https://miro.medium.com/v2/resize:fit:720/format:webp/1*dfYJiqHVoWBuKnI9q-SNHg.png"
+                alt="Base"
+                className="block object-contain h-12"
+              />
+            </div>
+            <div className="flex items-center justify-center col-span-6 sm:col-span-4 md:col-span-3 xl:col-span-2">
+              <img
+                src="https://altcoinsbox.com/wp-content/uploads/2023/01/link-full-chainlink-logo-2048x625.webp"
+                alt="Chainlink"
+                className="block object-contain h-9"
+              />
+            </div>
+
+            <div className="flex items-center justify-center col-span-6 sm:col-span-4 md:col-span-3 xl:col-span-2">
+              <img
+                src="https://altcoinsbox.com/wp-content/uploads/2023/04/full-biconomy-logo.png"
+                alt="Youtube"
+                className="block object-contain h-7 lg:h-8"
+              />
+            </div>
           </div>
         </div>
       </div>
