@@ -4,7 +4,7 @@ import {
   BiconomySmartAccountV2,
   PaymasterMode,
 } from "@biconomy/account";
-import { ethers } from "ethers";
+import { ethers, utils } from "ethers";
 import { Magic } from "magic-sdk";
 import "react-toastify/dist/ReactToastify.css";
 import { createContext, useContext, useEffect, useState } from "react";
@@ -153,16 +153,25 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
       );
       const response = await contractInstance.getAllProjects();
 
-      const _projects = response.map((project: any, i: any) => {
-        const item = {
-          projectName: project[0],
-          balance: project[1],
-          owner: project[2],
-          index: i
-        };
-        return item;
-      });
-      setProjects(_projects)
+      const _projects = await Promise.all(
+        response.map(async (project: any, i: any) => {
+          const _fundRaisedInUsd: any = await getProjectFundInUSD(i);
+          console.log(_fundRaisedInUsd, "_fundRaisedInUsd");
+          const fundRaisedInUsd = _fundRaisedInUsd/100000000
+          console.log(fundRaisedInUsd, "fundRaisedInUsd");
+
+          const item = {
+            projectName: project[0],
+            balance: project[1],
+            owner: project[2],
+            index: i,
+            fundRaisedInUsd,
+          };
+          return item;
+        })
+      );
+
+      setProjects(_projects);
       return _projects;
     } catch (error) {
       console.error(error);
@@ -417,7 +426,7 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
         withdrawEth,
         getWalletBalances,
         tokenBalances,
-        projects
+        projects,
       }}
     >
       {children}

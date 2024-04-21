@@ -33,7 +33,7 @@ const ProjectCard = ({
               {utils.formatEther(item.balance)?.toString()}
             </h3>
             <h3 className="text-xl font-medium font-mono">
-              Funds raised in USD : ${item?.livePrices?.ethBalance}
+              Funds raised in USD : ${item?.fundRaisedInUsd}
             </h3>
           </div>
 
