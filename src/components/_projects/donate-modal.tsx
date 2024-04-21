@@ -21,7 +21,7 @@ const DonateModal = ({ item, isOpen, onClose, index }: any) => {
   const initialRef = React.useRef(null);
   const finalRef = React.useRef(null);
 
-  const { fundEth } = useWallet();
+  const { fundEth, getAllProjects } = useWallet();
 
   const [selectedAmount, setSelectedAmount]: any = useState(null);
   const [loading, setLoading] = useState(false);
@@ -35,11 +35,12 @@ const DonateModal = ({ item, isOpen, onClose, index }: any) => {
   const handleSubmit = async (e: any) => {
     setLoading(true);
     e.preventDefault();
-    console.log(selectedAmount, index);
-    await handleFundEth(selectedAmount, index);
+    console.log(selectedAmount, item.index);
+    await handleFundEth(selectedAmount, item.index);
     setLoading(false);
     setTimeout(() => {
-      // resetTxnStatus();
+      onClose()
+      getAllProjects()
     }, 2000);
   };
 

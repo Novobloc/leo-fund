@@ -7,8 +7,7 @@ import { useWallet } from "@/context/WalletContext";
 
 const Project = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [projects, setProjects]: any = useState([]);
-  const [selectedProject, setSelectedProject] = useState(projects?.[0]);
+
   const {
     isAuthenticated,
     smartAccountAddress,
@@ -16,8 +15,11 @@ const Project = () => {
     getAllProjects,
     createProject,
     fundEth,
-    withdrawEth
+    withdrawEth,
+    projects,
   } = useWallet();
+
+  const [selectedProject, setSelectedProject] = useState(projects?.[0]);
 
   useEffect(() => {
     isAuthenticated && handleGetProjects();
@@ -26,8 +28,6 @@ const Project = () => {
   const handleGetProjects = async () => {
     const data: any = await getAllProjects();
     console.log(data, "data");
-
-    setProjects(data);
   };
 
   const handleSelectProject = (item: any) => {
@@ -39,8 +39,6 @@ const Project = () => {
     const data2: any = await getProjectFundInUSD(0);
     console.log(data2, "data2");
   };
-
-  
 
   const handleFundEth = async (item: any) => {
     const data3: any = await fundEth(0, "0.01");

@@ -12,9 +12,6 @@ const ProjectCard = ({
   selectedProject,
   index,
 }: any) => {
-  const openInNewTab = (url: string) => {
-    window.open(url, "_blank", "noreferrer");
-  };
 
   return (
     <div className="w-full max-w-xl">
