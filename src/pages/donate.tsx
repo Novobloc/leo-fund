@@ -40,10 +40,7 @@ const Project = () => {
     console.log(data2, "data2");
   };
 
-  const handleCreateProject = async (item: any) => {
-    const data3: any = await createProject("Project 2");
-    console.log(data3, "data3");
-  };
+  
 
   const handleFundEth = async (item: any) => {
     const data3: any = await fundEth(0, "0.01");
@@ -63,13 +60,13 @@ const Project = () => {
             Discover projects
           </h3>
           <Button onClick={handleGetProjects}> GetAllProjects</Button>
-          <Button onClick={handleCreateProject}> Create</Button>
+          {/* <Button onClick={handleCreateProject}> Create</Button> */}
           <Button onClick={handleGetProjectFundInUSD}> Get Funds</Button>
           <Button onClick={handleFundEth}> Fund</Button>
           <Button onClick={handleWithdrawEth}> Withdraw</Button>
 
           <Link
-            href={"/addprojec"}
+            href={"/addproject"}
             className="text-blue-500 text-lg font-medium space-links font-mono"
           >
             Add Project&nbsp;&gt;&nbsp;
