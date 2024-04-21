@@ -1,6 +1,7 @@
 "use client";
 import { useWallet } from "@/context/WalletContext";
 import { useState, SetStateAction } from "react";
+import { PhotoIcon, UserCircleIcon } from "@heroicons/react/24/solid";
 
 const ListProject = () => {
   const { createProject } = useWallet();
@@ -13,46 +14,54 @@ const ListProject = () => {
 
   const handleSubmit = async (event: { preventDefault: () => void }) => {
     event.preventDefault();
-    console.log(projectName);
-    // send the project name to the blockchain
-
-    const data3: any = await createProject(projectName);
-
+    await createProject(projectName);
     setProjectName("");
   };
 
   return (
     <div className="mx-auto max-w-7xl sm:py-8 px-4 lg:px-8 min-h-screen ">
-      <form className="w-full max-w-sm" onSubmit={handleSubmit}>
-        <div className="md:flex md:items-center mb-6">
-          <div className="md:w-1/3">
-            <label
-              className="block text-gray-500 font-bold md:text-right mb-1 md:mb-0 pr-4"
-              htmlFor="project-name"
-            >
-              Project Name
-            </label>
-          </div>
-          <div className="md:w-2/3">
-            <input
-              className="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
-              id="project-name"
-              type="text"
-              value={projectName}
-              onChange={handleInputChange}
-            />
-          </div>
-          <div className="md:flex md:items-center">
-            <div className="md:w-1/3"></div>
-            <div className="md:w-2/3">
-              <button
-                className="shadow bg-purple-500 hover:bg-purple-400 focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded"
-                type="submit"
-              >
-                Submit
-              </button>
+     
+      <form>
+        <div className="space-y-12">
+          <div className="border-b border-gray-900/10 pb-12">
+          
+           
+
+            <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+              <div className="sm:col-span-4">
+                <label
+                  htmlFor="email"
+                  className="block text-sm font-medium leading-6 text-gray-900"
+                >
+                  Project Name
+                </label>
+                <div className="mt-2">
+                  <input
+                    id="email"
+                    name="email"
+                    type="text"
+                    value={projectName}
+                    onChange={handleInputChange}
+                    autoComplete="email"
+                    className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  />
+                </div>
+              </div>
             </div>
+            <p className="mt-1 text-sm leading-6 text-gray-600">
+             The Smart contract Wallet address will be set as owner for the project.
+            </p>
           </div>
+        </div>
+
+        <div className="mt-6 flex items-center justify-end gap-x-6">
+          <button
+            type="submit"
+            onClick={handleSubmit}
+            className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+          >
+            Submit
+          </button>
         </div>
       </form>
     </div>
