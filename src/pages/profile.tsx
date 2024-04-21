@@ -223,6 +223,8 @@ const Home = () => {
                     <div className="flex items-start gap-x-3">
                       <p className="text-sm font-semibold leading-6 text-gray-900">
                         {project.projectName}
+                      </p>  <p className="text-sm font-semibold leading-6 text-gray-900">
+                        {project.fundRaisedInUsd.toFixed(4)} USD
                       </p>
                     </div>
                   </div>
