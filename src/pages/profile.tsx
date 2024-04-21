@@ -70,16 +70,17 @@ const Home = () => {
                             <div className="h-full">
                               <div className="pt-2 h-full">
                                 <h2 className="leading-6 text-xl font-bold font-sans text-gray-900 ">
-                                  Trade Crypto with Fiat
+                                  Buy & Sell Crypto
                                 </h2>
                                 <p className="mt-4 text-base text-gray-500 font-extralight">
-                                  Buy & Sell crypto easily with fiat and add to
-                                  your wallet
+                                No funds? No problem. Top up your wallet now and withdraw to fiat whenever you need.
                                 </p>
                                 <div className="pt-8 flex rounded-md shadow-sm  justify-center">
                                   <button
                                     type="button"
-                                    onClick={() => openTransak("BUY", "")}
+                                    onClick={() =>
+                                      openTransak("BUY", smartAccountAddress)
+                                    }
                                     className="mr-7 inline-flex items-center rounded-md border border-transparent bg-gradient-to-r from-black  to-blue-900 px-3 py-2 text-sm font-medium leading-4 text-white shadow-sm "
                                   >
                                     <ArrowDownIcon
@@ -90,7 +91,9 @@ const Home = () => {
                                   </button>
                                   <button
                                     type="button"
-                                    onClick={() => openTransak("SELL", "")}
+                                    onClick={() =>
+                                      openTransak("SELL", smartAccountAddress)
+                                    }
                                     className="inline-flex items-center rounded-md border border-transparent bg-gradient-to-r from-green-800  via-black to-black  px-3 py-2 text-sm font-medium leading-4 text-white shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
                                   >
                                     <ArrowUpIcon

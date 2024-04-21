@@ -12,7 +12,7 @@ export default function Index() {
             <div className="w-full pb-6 space-y-6 font  sm:max-w-md lg:max-w-lg md:space-y-4 lg:space-y-8 xl:space-y-9 sm:pr-5 lg:pr-0 md:pb-0">
               <h1 className="text-5xl font-extrabold tracking-tight text-gray-900 sm:text-5xl md:text-5xl lg:text-5xl xl:text-5xl">
                 <span className="block xl:inline">
-                  Fund the projects that matter to you
+                Back the projects that matter most
                 </span>
               </h1>
               <p className="mx-auto text-base text-gray-500 sm:max-w-md  lg:text-xl md:max-w-3xl">

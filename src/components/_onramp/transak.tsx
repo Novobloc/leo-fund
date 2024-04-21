@@ -1,7 +1,7 @@
 import Pusher from "pusher-js";
 import { Transak } from "@transak/transak-sdk";
 
-export const openTransak = (productsAvailed: string, address: string) => {
+export const openTransak = (productsAvailed: string, address: any) => {
   console.log(productsAvailed, "productsAvailed");
 
   const transakConfig: any = {
@@ -14,7 +14,7 @@ export const openTransak = (productsAvailed: string, address: string) => {
     productsAvailed,
     widgetHeight: "700px",
     widgetWidth: "450px",
-    defaultCryptoCurrency: "USDC",
+    defaultCryptoCurrency: "ETH",
   };
 
   let transakWidget = new Transak(transakConfig);
